@@ -1,0 +1,13 @@
+{
+  "google_sheet": "Google Sheet",
+  "name": "Name",
+  "mobile_number": "Mobile Number",
+  "model_number": "Model Number",
+  "email": "Email",
+  "text_field_required": "Required",
+  "purchase_date": "Purchase Date",
+  "upload_it": "Save Data",
+  "v_invalid_email": "Invalid email"
+
+
+}

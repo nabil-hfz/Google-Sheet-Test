@@ -1,0 +1,13 @@
+{
+  "google_sheet": "Google Sheet",
+  "name": "الاسم",
+  "mobile_number": "رقم الهاتف",
+  "model_number": "رقم الموديل",
+  "email": "البريد الإلكتروني",
+  "text_field_required": "هذا الحقل مطلوب",
+  "purchase_date": "تاريخ الشراء",
+  "upload_it": "حفظ المعلومات",
+  "v_invalid_email": "بريد غير صحيح"
+
+
+}
