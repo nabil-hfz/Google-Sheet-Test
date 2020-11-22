@@ -1,6 +1,6 @@
+import 'package:flutter/material.dart';
 import 'package:google_sheet_test/core/localization/translations.dart';
 import 'package:google_sheet_test/core/validators/base_validator.dart';
-import 'package:flutter/material.dart';
 
 class EmailValidator extends BaseValidator {
   @override
