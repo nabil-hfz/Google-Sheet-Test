@@ -6,7 +6,7 @@ import 'package:google_sheet_test/features/form/data/api_requests/add_sheet_requ
 
 abstract class AddSheetRemoteDataSource extends RemoteDataSource {
   Future<Either<BaseError, Object>> addGoogleSheet({
-    AddSheetRequest data,
+    GoogleSheetRequest data,
     CancelToken cancelToken,
   });
 }

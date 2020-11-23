@@ -2,6 +2,9 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:google_sheet_test/core/errors/connection_error.dart';
+import 'package:google_sheet_test/core/errors/custom_error.dart';
 import 'package:google_sheet_test/core/errors/error_widgets.dart';
 import 'package:google_sheet_test/core/localization/translations.dart';
 import 'package:google_sheet_test/core/resources/edge_margin.dart';
@@ -16,8 +19,11 @@ import 'package:google_sheet_test/core/validators/email_validator.dart';
 import 'package:google_sheet_test/core/validators/required_validator.dart';
 import 'package:google_sheet_test/features/form/data/api_requests/add_sheet_request.dart';
 import 'package:google_sheet_test/features/form/presentation/blocs/add_google_sheet_bloc.dart';
+import 'package:google_sheet_test/features/list_of_sheets/presentation/screens/sheets_list_screen.dart';
 import 'package:intl/intl.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+
+import '../../../../main.dart';
 
 class FormScreen extends StatefulWidget {
   static const routeName = 'screens/form_screen';
@@ -35,16 +41,16 @@ class _FormScreenState extends State<FormScreen> {
   bool _nameValidation = false;
   final FocusNode _nameFocusNode = FocusNode();
   final TextEditingController _nameEditingController =
-      new TextEditingController();
+  new TextEditingController();
 
   bool _mobileNumberValidation = false;
   final FocusNode _mobileNumberFocusNode = FocusNode();
   final TextEditingController _mobileNumberEditingController =
-      new TextEditingController();
+  new TextEditingController();
 
   final FocusNode _modelNumberFocusNode = FocusNode();
   final TextEditingController _modelNumberEditingController =
-      new TextEditingController();
+  new TextEditingController();
 
   final FocusNode _datePickerFocusNode = FocusNode();
   TextEditingController _datePickerController = TextEditingController();
@@ -59,6 +65,7 @@ class _FormScreenState extends State<FormScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   final AddSheetBloc _bloc = AddSheetBloc();
+  String _purchaseDate = ''; //empty
 
   @override
   void initState() {
@@ -69,15 +76,23 @@ class _FormScreenState extends State<FormScreen> {
   void dispose() {
     _bloc.close();
     _emailFocusNode.dispose();
+    _modelNumberEditingController.dispose();
     _mobileNumberFocusNode.dispose();
-    _mobileNumberFocusNode.dispose();
+    _modelNumberFocusNode.dispose();
     _datePickerFocusNode.dispose();
-    _emailFocusNode.dispose();
+    _nameFocusNode.dispose();
     super.dispose();
   }
 
   AppBar buildAppBar() {
     return AppBar(
+      actions: <Widget>[
+        IconButton(
+          // padding: EdgeInsets.only(right: 20.0),
+          onPressed: () {},
+          icon: Icon(Icons.more_vert),
+        ),
+      ],
       backgroundColor: globalColor.primary,
       title: Text(
         Translations.of(context).translate('google_sheet'),
@@ -88,7 +103,7 @@ class _FormScreenState extends State<FormScreen> {
       centerTitle: true,
       brightness: Brightness.light,
       iconTheme: IconThemeData(
-        color: globalColor.accentColor,
+        color: globalColor.globalWhite,
       ),
     );
   }
@@ -181,7 +196,7 @@ class _FormScreenState extends State<FormScreen> {
   buildTitle(String title) {
     return Container(
       margin:
-          const EdgeInsets.only(left: EdgeMargin.big, right: EdgeMargin.big),
+      const EdgeInsets.only(left: EdgeMargin.big, right: EdgeMargin.big),
       child: Row(
         mainAxisSize: MainAxisSize.max,
         children: <Widget>[
@@ -248,7 +263,8 @@ class _FormScreenState extends State<FormScreen> {
     );
   }
 
-  buildEmailTextField(widthS) => Container(
+  buildEmailTextField(widthS) =>
+      Container(
         margin: EdgeInsets.only(left: 2, right: 2),
         width: widthS * .9,
         child: BorderFormField(
@@ -276,15 +292,13 @@ class _FormScreenState extends State<FormScreen> {
         ),
       );
 
-  _fieldFocusChange(
-      BuildContext context, FocusNode currentFocus, FocusNode nextFocus) {
+  _fieldFocusChange(BuildContext context, FocusNode currentFocus,
+      FocusNode nextFocus) {
     if (currentFocus != null && nextFocus != null) {
       currentFocus.unfocus();
       FocusScope.of(context).requestFocus(nextFocus);
     }
   }
-
-  String _purchaseDate = ''; //empty
 
   @override
   Widget build(BuildContext context) {
@@ -292,14 +306,26 @@ class _FormScreenState extends State<FormScreen> {
     double widthS = globalSize.setWidthPercentage(100, context);
     double heightS = globalSize.setHeightPercentage(100, context) -
         appBar.preferredSize.height -
-        MediaQuery.of(context).viewPadding.top;
+        MediaQuery
+            .of(context)
+            .viewPadding
+            .top;
 
     return Scaffold(
       key: _scaffoldKey,
       appBar: appBar,
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.list),
-        onPressed: () {},
+        onPressed: () {
+          print("value");
+
+          Navigator.pushNamed(context, SheetsListScreen.routeName);
+          // Navigator.of(context)
+          //     .pushNamed(SheetsListScreen.routeName)
+          //     .then((value) {
+          //   print(value);
+          // });
+        },
       ),
       body: Container(
         width: widthS,
@@ -309,25 +335,36 @@ class _FormScreenState extends State<FormScreen> {
           child: BlocListener<AddSheetBloc, AddSheetState>(
             bloc: _bloc,
             listener: (context, state) async {
-              /*
-              if (state is ExternalLoginSuccess) {
-                BlocProvider.of<ApplicationBloc>(context)
-                    .add(SetUserProfileEvent());
-                while (Navigator.of(context).canPop())
-                  Navigator.of(context).pop();
-                Navigator.of(context).pushReplacementNamed(MainPage.routeName);
+              if (state is AddSheetDoneState) {
+                appConfig.showToast(
+                  backgroundColor: globalColor.black,
+                  msg: Translations.of(context).translate('added_successfully'),
+                  toastLength: Toast.LENGTH_LONG,
+                );
+                _emailEditingController.text = "";
+                _mobileNumberEditingController.text = "";
+                _modelNumberEditingController.text = "";
+                _datePickerController.text = "";
+                _nameEditingController.text = "";
+                _nameValidation = false;
+                _mobileNumberValidation = false;
+                _emailFocusNode.unfocus();
+                _mobileNumberFocusNode.unfocus();
+                _modelNumberFocusNode.unfocus();
+                _datePickerFocusNode.unfocus();
+                _nameFocusNode.unfocus();
               }
-              if (state is ExternalLoginFailure) {
+              if (state is AddSheetFailureState) {
                 final error = state.error;
                 if (error is ConnectionError) {
-                  ErrorViewer.showConnectionError(context, state.callback);
+                  ErrorViewer.showConnectionError(context, null);
                 } else if (error is CustomError) {
                   ErrorViewer.showCustomError(context, error.message);
                 } else {
                   print(error);
                   ErrorViewer.showUnexpectedError(context);
                 }
-              }*/
+              }
             },
             child: BlocBuilder<AddSheetBloc, AddSheetState>(
               bloc: _bloc,
@@ -370,7 +407,7 @@ class _FormScreenState extends State<FormScreen> {
                           width: widthS * .9,
                           color: globalColor.secondaryColor,
                           title:
-                              Translations.of(context).translate('upload_it'),
+                          Translations.of(context).translate('upload_it'),
                           action: () {
                             setState(() {
                               _nameValidation = true;
@@ -389,12 +426,14 @@ class _FormScreenState extends State<FormScreen> {
                               _bloc.add(
                                 AddSheetEvent(
                                   cancelToken: _cancelToken,
-                                  addSheetRequest: AddSheetRequest(
+                                  addSheetRequest: GoogleSheetRequest(
+                                    id: uuid.v1(),
                                     name: _name,
                                     mobileNumber: _mobilNumber,
                                     modelNumber: _modelNumber,
                                     purchaseDate: _purchaseDate,
                                     email: _email,
+                                    httpMethod: "POST",
                                   ),
                                 ),
                               );
@@ -431,13 +470,13 @@ class _FormScreenState extends State<FormScreen> {
         ),
         borderRadius: BorderRadius.all(
             Radius.circular(borderRadius) //         <--- border radius here
-            ),
+        ),
       ),
       labelText: labelText,
       hintText: hintText,
       alignLabelWithHint: false,
       labelStyle:
-          textStyle.normalTSBasic.copyWith(color: globalColor.textLabel),
+      textStyle.normalTSBasic.copyWith(color: globalColor.textLabel),
       errorStyle: textStyle.smallTSBasic.copyWith(
         color: Colors.red,
         fontSize: textSize.subMin,
@@ -470,7 +509,8 @@ class _FormScreenState extends State<FormScreen> {
 //        filled: false);
 //  }
 
-  buildSendButton(BuildContext context) => Row(
+  buildSendButton(BuildContext context) =>
+      Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           /* ProgressButtonWidget(

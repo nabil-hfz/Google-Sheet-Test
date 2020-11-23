@@ -23,7 +23,7 @@ abstract class Repository {
   Result<BaseError, List<Entity>> executeForList<
           Model extends BaseModel<Entity>, Entity extends BaseEntity>(
       {@required Either<BaseError, List<Model>> remoteResult}) {
-    if (remoteResult.isRight()) {
+    if (remoteResult != null && remoteResult.isRight()) {
       return Result(
         data: (remoteResult as Right<BaseError, List<Model>>)
             .value
@@ -32,7 +32,7 @@ abstract class Repository {
       );
     } else {
       return Result(
-        error: (remoteResult as Left<BaseError, List<Model>>).value,
+        error: (remoteResult as Left<BaseError, List<Model>>)?.value,
       );
     }
   }

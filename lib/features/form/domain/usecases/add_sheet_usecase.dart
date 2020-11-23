@@ -5,11 +5,10 @@ import 'package:google_sheet_test/core/params/base_params.dart';
 import 'package:google_sheet_test/core/results/result.dart';
 import 'package:google_sheet_test/core/usecases/usecase.dart';
 import 'package:google_sheet_test/features/form/data/api_requests/add_sheet_request.dart';
-import 'package:google_sheet_test/features/form/domain/repositories/my_ticket_repository.dart';
-//import 'package:google_sheet_test/features/user_management/domain/repositories/user_repository.dart';
+import 'package:google_sheet_test/features/form/domain/repositories/add_sheet_repository.dart';
 
 class AddSheetParams extends BaseParams {
-  final AddSheetRequest addSheetRequest;
+  final GoogleSheetRequest addSheetRequest;
 
   AddSheetParams({
     @required this.addSheetRequest,
@@ -18,13 +17,13 @@ class AddSheetParams extends BaseParams {
 }
 
 class AddSheetUseCase extends UseCase<Object, AddSheetParams> {
-  final AddSheetRepository repository;
+  final AddGoogleSheetRepository repository;
 
   AddSheetUseCase(this.repository);
 
   @override
   Future<Result<BaseError, Object>> call(AddSheetParams params) =>
-      repository.submitData(
+      repository.addGoogleSheet(
         addSheetRequest:params.addSheetRequest,
         cancelToken: params.cancelToken,
       );

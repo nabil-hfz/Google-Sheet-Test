@@ -6,27 +6,54 @@ import 'package:google_sheet_test/core/bloc/simple_bloc_delegate.dart';
 import 'package:google_sheet_test/core/resources/global_color.dart';
 import 'package:google_sheet_test/features/app.dart';
 import 'package:google_sheet_test/features/form/data/datasources/add_sheet_remote_data_source.dart';
+import 'package:google_sheet_test/features/list_of_sheets/data/datasources/concrete_sheets_list_remote_data_source.dart';
+import 'package:google_sheet_test/features/list_of_sheets/domain/repositories/sheets_list_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uuid/uuid.dart';
 
 import 'core/resources/constants.dart';
 import 'core/ui/restart_widget.dart';
 import 'features/form/data/datasources/add_sheet_remote_data_source.dart';
 import 'features/form/data/datasources/concrete_add_sheet_remote_data_source.dart';
 import 'features/form/data/repositories/concrete_add_sheet_repository.dart';
-import 'features/form/domain/repositories/my_ticket_repository.dart';
+import 'features/form/domain/repositories/add_sheet_repository.dart';
+import 'features/list_of_sheets/data/datasources/sheets_list_remote_data_source.dart';
+import 'features/list_of_sheets/data/repositories/concrete_sheets_list_repository.dart';
 
 final locator = GetIt.instance;
+final uuid = Uuid();
 
 void setupLocator() {
   //===================================
   //    Add Google Sheet Repo
   //===================================
-  locator.registerFactory<AddSheetRemoteDataSource>(
+ /* locator.registerFactory<AddSheetRemoteDataSource>(
     () => ConcreteAddSheetRemoteDataSource(),
   );
-  locator.registerFactory<AddSheetRepository>(
+  locator.registerFactory<AddGoogleSheetRepository>(
     () => ConcreteAddSheetRepository(locator<AddSheetRemoteDataSource>()),
+  ); //===================================
+  //    Add Google Sheet Repo
+  //===================================
+  locator.registerFactory<SheetsListRemoteDataSource>(
+    () => ConcreteSheetsListRemoteDataSource(),
   );
+  locator.registerFactory<SheetsListRepository>(
+    () => ConcreteSheetsListRepository(locator<SheetsListRemoteDataSource>()),
+  );*/
+  locator.registerFactory<AddSheetRemoteDataSource>(
+        () => ConcreteAddSheetRemoteDataSource(),
+  );
+  locator.registerFactory<AddGoogleSheetRepository>(
+        () => ConcreteAddSheetRepository(locator<AddSheetRemoteDataSource>()),
+  );
+locator.registerFactory<SheetsListRemoteDataSource>(
+        () => ConcreteSheetsListRemoteDataSource(),
+  );
+  locator.registerFactory<SheetsListRepository>(
+        () => ConcreteSheetsListRepository(locator<SheetsListRemoteDataSource>()),
+  );
+
 }
 
 void setupBloc() {

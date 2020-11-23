@@ -7,7 +7,14 @@
   "text_field_required": "هذا الحقل مطلوب",
   "purchase_date": "تاريخ الشراء",
   "upload_it": "حفظ المعلومات",
-  "v_invalid_email": "بريد غير صحيح"
+  "v_invalid_email": "بريد غير صحيح",
+  "sheets_list": "قائمة الجداول",
+  "delete": "حذف",
+  "there_is_no_item": "لا يوجد اي عناصر",
+  "err_connection": "خطأ في الاتصال",
+  "err_unexpected": "خطأ غير متوقع",
+  "retry": "اعادة المحاولة",
+  "added_successfully": "تمت الاضافة بنجاح"
 
 
 }

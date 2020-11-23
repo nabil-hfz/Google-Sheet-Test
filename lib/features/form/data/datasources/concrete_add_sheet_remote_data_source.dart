@@ -14,7 +14,7 @@ import 'add_sheet_remote_data_source.dart';
 class ConcreteAddSheetRemoteDataSource extends AddSheetRemoteDataSource {
   @override
   Future<Either<BaseError, Object>> addGoogleSheet({
-    AddSheetRequest data,
+    GoogleSheetRequest data,
     CancelToken cancelToken,
   }) async {
     return request<Object, EmptyResponse>(

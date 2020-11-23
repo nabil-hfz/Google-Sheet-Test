@@ -7,7 +7,14 @@
   "text_field_required": "Required",
   "purchase_date": "Purchase Date",
   "upload_it": "Save Data",
-  "v_invalid_email": "Invalid email"
+  "v_invalid_email": "Invalid email",
+  "sheets_list": "Sheets List",
+  "delete": "Delete",
+  "there_is_no_item": "There are no items",
+  "err_connection": "Connection Error",
+  "err_unexpected": "UnExpected Error",
+  "retry": "Retry",
+  "added_successfully": "Added Successfully"
 
 
 }

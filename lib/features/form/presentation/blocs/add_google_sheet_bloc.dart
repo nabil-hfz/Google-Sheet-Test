@@ -2,11 +2,11 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:google_sheet_test/core/errors/base_error.dart';
+import 'package:google_sheet_test/core/errors/unknown_error.dart';
 import 'package:google_sheet_test/core/http/http.dart';
+import 'package:google_sheet_test/core/resources/constants.dart';
 import 'package:google_sheet_test/features/form/data/api_requests/add_sheet_request.dart';
-import 'package:google_sheet_test/features/form/domain/repositories/my_ticket_repository.dart';
-import 'package:google_sheet_test/features/form/domain/usecases/add_sheet_usecase.dart';
-import 'package:google_sheet_test/main.dart';
+import 'package:http/http.dart' as http;
 
 @immutable
 abstract class AddSheetState extends Equatable {}
@@ -36,7 +36,7 @@ class AddSheetDoneState extends AddSheetState {
 }
 
 class AddSheetFailureState extends AddSheetState {
-  final BaseError error;
+  final dynamic error;
 
   AddSheetFailureState(this.error);
 
@@ -48,7 +48,7 @@ class AddSheetFailureState extends AddSheetState {
 }
 
 class AddSheetEvent {
-  final AddSheetRequest addSheetRequest;
+  final GoogleSheetRequest addSheetRequest;
   final CancelToken cancelToken;
 
   AddSheetEvent({
@@ -64,7 +64,20 @@ class AddSheetBloc extends Bloc<AddSheetEvent, AddSheetState> {
   @override
   Stream<AddSheetState> mapEventToState(AddSheetEvent event) async* {
     yield AddSheetLoadingState();
-    final result = await AddSheetUseCase(locator<AddSheetRepository>())(
+    try {
+      final result =
+          await http.post(API_BASE, body: event.addSheetRequest.toJson());
+      if (result.statusCode == 302 || result.statusCode == 200) {
+        yield AddSheetDoneState();
+      } else {
+        yield AddSheetFailureState(UnknownError());
+      }
+    } catch (e) {
+      print(e);
+
+      yield AddSheetFailureState(e);
+    }
+    /* final result = await AddSheetUseCase(locator<AddGoogleSheetRepository>())(
       AddSheetParams(
         addSheetRequest: event.addSheetRequest,
         cancelToken: event.cancelToken,
@@ -75,6 +88,6 @@ class AddSheetBloc extends Bloc<AddSheetEvent, AddSheetState> {
     } else {
       final error = result.error;
       yield AddSheetFailureState(error);
-    }
+    }*/
   }
 }
