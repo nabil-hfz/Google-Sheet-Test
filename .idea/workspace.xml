@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="features/list-sheet-screen" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="361" y="165" key="Vcs.Push.Dialog.v2" timestamp="1606109863149">
+      <screen x="0" y="0" width="1536" height="864" />
+    </state>
+    <state x="361" y="165" key="Vcs.Push.Dialog.v2/0.0.1536.864@0.0.1536.864" timestamp="1606109863149" />
+    <state x="475" y="224" key="git4idea.merge.GitPullDialog" timestamp="1606109850673">
+      <screen x="0" y="0" width="1536" height="864" />
+    </state>
+    <state x="475" y="224" key="git4idea.merge.GitPullDialog/0.0.1536.864@0.0.1536.864" timestamp="1606109850673" />
+  </component>
+</project>
